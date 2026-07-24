@@ -127,16 +127,6 @@ console.log(
 
 
 
-const Admin = require("./models/Admin");
-
-
-const admins = await Admin.find();
-
-
-console.log(
-"Admins in database:",
-admins
-);
 
 
 
