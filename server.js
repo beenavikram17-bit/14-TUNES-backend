@@ -139,7 +139,12 @@ mongoose.connect(
 
 
 
+const Admin=require("./models/Admin");
 
+Admin.find()
+.then(data=>{
+console.log("Admins:",data);
+});
 // =================================
 // SERVER START
 // =================================
