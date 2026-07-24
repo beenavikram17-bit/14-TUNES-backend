@@ -1,9 +1,3 @@
-// =====================================================
-//          14 TUNES BACKEND SERVER
-//          PRODUCTION VERSION
-// =====================================================
-
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -11,61 +5,67 @@ const cors = require("cors");
 require("dotenv").config();
 
 
-
 const app = express();
 
 
 
 
-// =====================================================
-//                  MIDDLEWARE
-// =====================================================
+
+// ==============================
+// CORS
+// ==============================
 
 
-app.use(
-    cors({
-        origin: "*",
-        methods:[
-            "GET",
-            "POST",
-            "PUT",
-            "PATCH",
-            "DELETE"
-        ],
-        allowedHeaders:[
-            "Content-Type",
-            "Authorization"
-        ]
-    })
-);
+app.use(cors({
+
+origin:[
+
+"https://6a63c3faa7bd82a2a926e35f--14-tunes-frontend.netlify.app"
+
+],
+
+methods:[
+
+"GET",
+"POST",
+"PUT",
+"PATCH",
+"DELETE"
+
+],
+
+credentials:true
 
 
-app.use(
-    express.json()
-);
+}));
 
 
 
 
-// =====================================================
-//                  TEST API
-// =====================================================
+
+app.use(express.json());
+
+
+
+
+
+// ==============================
+// TEST ROUTE
+// ==============================
 
 
 app.get("/",(req,res)=>{
 
 
-    res.status(200).json({
+res.json({
 
-        success:true,
+success:true,
 
-        message:
-        "14 TUNES Backend Server Running 🚀",
+message:
+"14 TUNES Backend Server Running 🚀"
 
-        status:
-        "Online"
 
-    });
+});
 
 
 });
@@ -73,37 +73,10 @@ app.get("/",(req,res)=>{
 
 
 
-// =====================================================
-//                  HEALTH CHECK
-// =====================================================
 
-
-app.get("/health",(req,res)=>{
-
-
-    res.status(200).json({
-
-        server:
-        "Running",
-
-        database:
-        mongoose.connection.readyState === 1
-        ?
-        "Connected"
-        :
-        "Disconnected"
-
-    });
-
-
-});
-
-
-
-
-// =====================================================
-//                  CONTACT ROUTE
-// =====================================================
+// ==============================
+// ROUTES
+// ==============================
 
 
 const contactRoutes =
@@ -111,71 +84,57 @@ require("./routes/ContactRoutes");
 
 
 app.use(
-    "/api/contact",
-    contactRoutes
+"/api/contact",
+contactRoutes
 );
 
 
-
-
-// =====================================================
-//                  USER ROUTE
-// =====================================================
 
 
 const userRoutes =
 require("./routes/userRoutes");
 
 
-console.log(
-    "User Route Loaded ✅"
-);
-
 
 app.use(
-    "/api/users",
-    userRoutes
+"/api/users",
+userRoutes
 );
 
 
 
 
-// =====================================================
-//              DATABASE CONNECTION
-// =====================================================
 
 
-mongoose.set(
-    "strictQuery",
-    true
-);
+
+// ==============================
+// DATABASE
+// ==============================
 
 
 mongoose.connect(
-    process.env.MONGO_URI
+
+process.env.MONGO_URI
+
 )
 
 .then(()=>{
 
 
-    console.log(
-        "MongoDB Atlas Connected Successfully ✅"
-    );
+console.log(
+"MongoDB Atlas Connected Successfully ✅"
+);
 
 
 })
 
+.catch(error=>{
 
-.catch((error)=>{
 
-
-    console.log(
-
-        "MongoDB Connection Error:",
-
-        error.message
-
-    );
+console.log(
+"MongoDB Connection Error:",
+error.message
+);
 
 
 });
@@ -183,9 +142,12 @@ mongoose.connect(
 
 
 
-// =====================================================
-//                  SERVER START
-// =====================================================
+
+
+
+// ==============================
+// SERVER
+// ==============================
 
 
 const PORT =
