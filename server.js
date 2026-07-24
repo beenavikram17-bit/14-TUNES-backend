@@ -9,146 +9,140 @@ const app = express();
 
 
 
-
-
-// ==============================
-// CORS
-// ==============================
-
+// =================================
+// CORS CONFIGURATION
+// =================================
 
 app.use(cors({
 
-origin:[
+    origin:[
+        "https://6a63c3faa7bd82a2a926e35f--14-tunes-frontend.netlify.app"
+    ],
 
-"https://6a63c3faa7bd82a2a926e35f--14-tunes-frontend.netlify.app"
+    methods:[
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+    ],
 
-],
-
-methods:[
-
-"GET",
-"POST",
-"PUT",
-"PATCH",
-"DELETE"
-
-],
-
-credentials:true
-
+    credentials:true
 
 }));
 
 
 
-
+// =================================
+// MIDDLEWARE
+// =================================
 
 app.use(express.json());
 
 
 
 
-
-// ==============================
+// =================================
 // TEST ROUTE
-// ==============================
-
+// =================================
 
 app.get("/",(req,res)=>{
 
+    res.json({
 
-res.json({
+        success:true,
 
-success:true,
+        message:
+        "14 TUNES Backend Server Running 🚀"
 
-message:
-"14 TUNES Backend Server Running 🚀"
-
-
-});
-
+    });
 
 });
 
 
 
 
-
-// ==============================
-// ROUTES
-// ==============================
-
+// =================================
+// CONTACT ROUTES
+// =================================
 
 const contactRoutes =
 require("./routes/ContactRoutes");
 
 
 app.use(
-"/api/contact",
-contactRoutes
+    "/api/contact",
+    contactRoutes
 );
 
 
 
+
+// =================================
+// USER ROUTES
+// =================================
 
 const userRoutes =
 require("./routes/userRoutes");
 
 
-
 app.use(
-"/api/users",
-userRoutes
+    "/api/users",
+    userRoutes
 );
 
 
 
 
+// =================================
+// ADMIN LOGIN ROUTES
+// =================================
+
+const adminRoutes =
+require("./routes/adminRoutes");
+
+
+app.use(
+    "/api/admin",
+    adminRoutes
+);
 
 
 
-// ==============================
-// DATABASE
-// ==============================
 
+// =================================
+// DATABASE CONNECTION
+// =================================
 
 mongoose.connect(
 
-process.env.MONGO_URI
+    process.env.MONGO_URI
 
 )
 
 .then(()=>{
 
-
-console.log(
-"MongoDB Atlas Connected Successfully ✅"
-);
-
+    console.log(
+        "MongoDB Atlas Connected Successfully ✅"
+    );
 
 })
 
-.catch(error=>{
+.catch((error)=>{
 
-
-console.log(
-"MongoDB Connection Error:",
-error.message
-);
-
+    console.log(
+        "MongoDB Connection Error:",
+        error.message
+    );
 
 });
 
 
 
 
-
-
-
-// ==============================
-// SERVER
-// ==============================
-
+// =================================
+// SERVER START
+// =================================
 
 const PORT =
 process.env.PORT || 5001;
@@ -157,18 +151,14 @@ process.env.PORT || 5001;
 
 app.listen(
 
-PORT,
+    PORT,
 
-()=>{
+    ()=>{
 
+        console.log(
+            `Server running on port ${PORT} 🚀`
+        );
 
-console.log(
-
-`Server running on port ${PORT} 🚀`
-
-);
-
-
-}
+    }
 
 );
