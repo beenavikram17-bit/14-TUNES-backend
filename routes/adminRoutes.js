@@ -1,153 +1,119 @@
-const express = require("express");
+const express=require("express");
 
-const router = express.Router();
+const router=express.Router();
 
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken");
 
-const Admin = require("../models/Admin");
+const Admin=require("../models/Admin");
 
 
 
+router.post("/login",async(req,res)=>{
 
-// =================================
-// ADMIN LOGIN API
-// POST /api/admin/login
-// =================================
 
-router.post("/login", async (req, res) => {
+try{
 
 
-    try{
+const {
+username,
+password
+}=req.body;
 
 
-        const {
 
-            username,
+if(!username || !password){
 
-            password
+return res.status(400).json({
 
-        } = req.body;
+message:"Username and password required"
 
+});
 
+}
 
 
-        const admin = await Admin.findOne({
 
-            username: username
+const admin =
+await Admin.findOne({
+username
+});
 
-        });
 
 
+if(!admin){
 
+return res.status(401).json({
 
+message:"Invalid Username or Password"
 
-        if(!admin){
+});
 
+}
 
-            return res.status(401).json({
 
-                message:"Invalid Username or Password"
 
-            });
+const valid =
+await admin.comparePassword(password);
 
 
-        }
 
+if(!valid){
 
+return res.status(401).json({
 
+message:"Invalid Username or Password"
 
+});
 
-        const isPasswordValid =
+}
 
-        await admin.comparePassword(password);
 
 
+const token =
+jwt.sign(
 
+{
+id:admin._id,
+username:admin.username
+},
 
+process.env.JWT_SECRET,
 
-        if(!isPasswordValid){
+{
+expiresIn:"1h"
+}
 
+);
 
-            return res.status(401).json({
 
-                message:"Invalid Username or Password"
 
-            });
+res.json({
 
+message:"Login Successful",
 
-        }
+token
 
+});
 
 
 
+}
 
+catch(error){
 
-        const token = jwt.sign(
 
-            {
+res.status(500).json({
 
-                id: admin._id,
+message:error.message
 
-                username: admin.username
+});
 
-            },
 
-
-            process.env.JWT_SECRET,
-
-
-            {
-
-                expiresIn:"1h"
-
-            }
-
-
-        );
-
-
-
-
-
-
-
-        res.status(200).json({
-
-
-            message:"Login Successful",
-
-
-            token:token
-
-
-
-        });
-
-
-
-
-
-    }
-
-
-    catch(error){
-
-
-        res.status(500).json({
-
-            message:error.message
-
-        });
-
-
-    }
+}
 
 
 });
 
 
 
-
-
-
-module.exports = router;
+module.exports=router;

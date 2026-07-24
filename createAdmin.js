@@ -1,50 +1,37 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const dotenv = require("dotenv");
+require("dotenv").config();
 
 const Admin = require("./models/Admin");
-
-dotenv.config();
 
 
 mongoose.connect(process.env.MONGO_URI)
 
-.then(async ()=>{
+.then(async()=>{
 
 
     const existingAdmin =
     await Admin.findOne({
-
         username:"14TunesOwner"
-
     });
-
 
 
     if(existingAdmin){
 
-
         console.log(
-        "Admin already exists ✅"
+            "Admin already exists ❌"
         );
 
-
-        mongoose.disconnect();
-
-        return;
+        process.exit();
 
     }
 
 
 
-
     const hashedPassword =
     await bcrypt.hash(
-
-        "X7944RR@2026",
-
+        "Vicky83176",
         10
-
     );
 
 
@@ -65,13 +52,11 @@ mongoose.connect(process.env.MONGO_URI)
 
 
     console.log(
-    "Admin Created Successfully ✅"
+        "Admin Created Successfully ✅"
     );
 
 
-
-    mongoose.disconnect();
-
+    process.exit();
 
 
 })
@@ -81,7 +66,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 
     console.log(
-    error.message
+        "Database Error:",
+        error.message
     );
 
 

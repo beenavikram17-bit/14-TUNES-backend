@@ -15,9 +15,7 @@ const app = express();
 
 app.use(cors({
 
-    origin:[
-        "https://6a63c3faa7bd82a2a926e35f--14-tunes-frontend.netlify.app"
-    ],
+    origin:true,
 
     methods:[
         "GET",
@@ -30,8 +28,6 @@ app.use(cors({
     credentials:true
 
 }));
-
-
 
 // =================================
 // MIDDLEWARE
@@ -118,19 +114,25 @@ app.use(
 
 mongoose.connect(process.env.MONGO_URI)
 
-.then(async()=>{
-
+.then(()=>{
 
 console.log(
 "MongoDB Atlas Connected Successfully ✅"
 );
 
 
-
-
-
-
 })
+
+.catch(error=>{
+
+
+console.log(
+"MongoDB Error:",
+error.message
+);
+
+
+});
 // =================================
 // SERVER START
 // =================================
