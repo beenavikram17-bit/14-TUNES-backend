@@ -114,36 +114,38 @@ app.use(
 // DATABASE CONNECTION
 // =================================
 
-mongoose.connect(
 
-    process.env.MONGO_URI
 
-)
 
-.then(()=>{
+mongoose.connect(process.env.MONGO_URI)
+
+.then(async()=>{
 
     console.log(
         "MongoDB Atlas Connected Successfully ✅"
     );
 
-})
 
-.catch((error)=>{
+    const Admin = require("./models/Admin");
+
+
+    const admins = await Admin.find();
+
+
+    console.log(
+        "Admins in database:",
+        admins
+    );
+
+
+})
+.catch(error=>{
 
     console.log(
         "MongoDB Connection Error:",
         error.message
     );
 
-});
-
-
-
-const Admin=require("./models/Admin");
-
-Admin.find()
-.then(data=>{
-console.log("Admins:",data);
 });
 // =================================
 // SERVER START
