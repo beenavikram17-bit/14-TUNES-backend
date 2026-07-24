@@ -1,57 +1,212 @@
-const express = require("express");
+// =====================================================
+//          14 TUNES BACKEND SERVER
+//          PRODUCTION VERSION
+// =====================================================
 
+
+const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
-const dotenv = require("dotenv");
+require("dotenv").config();
 
-const connectDB = require("./config/database");
 
-const userRoutes = require("./routes/userRoutes");
-
-const adminRoutes = require("./routes/adminRoutes");
-
-dotenv.config();
-
-connectDB();
 
 const app = express();
 
 
-// Middleware
-
-app.use(cors());
-
-app.use(express.json());
 
 
-// User API Routes
-
-app.use("/api/users", userRoutes);
-
-
-// Admin API Routes
-
-app.use("/api/admin", adminRoutes);
+// =====================================================
+//                  MIDDLEWARE
+// =====================================================
 
 
-// Test Route
+app.use(
+    cors({
+        origin: "*",
+        methods:[
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+        ],
+        allowedHeaders:[
+            "Content-Type",
+            "Authorization"
+        ]
+    })
+);
 
-app.get("/", (req,res)=>{
 
-    res.send(
-    "14 TUNES Backend Running Successfully 🎬"
-    );
+app.use(
+    express.json()
+);
+
+
+
+
+// =====================================================
+//                  TEST API
+// =====================================================
+
+
+app.get("/",(req,res)=>{
+
+
+    res.status(200).json({
+
+        success:true,
+
+        message:
+        "14 TUNES Backend Server Running 🚀",
+
+        status:
+        "Online"
+
+    });
+
 
 });
 
 
-const PORT = process.env.PORT || 5001;
 
 
-app.listen(PORT,()=>{
+// =====================================================
+//                  HEALTH CHECK
+// =====================================================
+
+
+app.get("/health",(req,res)=>{
+
+
+    res.status(200).json({
+
+        server:
+        "Running",
+
+        database:
+        mongoose.connection.readyState === 1
+        ?
+        "Connected"
+        :
+        "Disconnected"
+
+    });
+
+
+});
+
+
+
+
+// =====================================================
+//                  CONTACT ROUTE
+// =====================================================
+
+
+const contactRoutes =
+require("./routes/ContactRoutes");
+
+
+app.use(
+    "/api/contact",
+    contactRoutes
+);
+
+
+
+
+// =====================================================
+//                  USER ROUTE
+// =====================================================
+
+
+const userRoutes =
+require("./routes/userRoutes");
+
+
+console.log(
+    "User Route Loaded ✅"
+);
+
+
+app.use(
+    "/api/users",
+    userRoutes
+);
+
+
+
+
+// =====================================================
+//              DATABASE CONNECTION
+// =====================================================
+
+
+mongoose.set(
+    "strictQuery",
+    true
+);
+
+
+mongoose.connect(
+    process.env.MONGO_URI
+)
+
+.then(()=>{
+
 
     console.log(
-    `Server running on port ${PORT}`
+        "MongoDB Atlas Connected Successfully ✅"
     );
 
+
+})
+
+
+.catch((error)=>{
+
+
+    console.log(
+
+        "MongoDB Connection Error:",
+
+        error.message
+
+    );
+
+
 });
+
+
+
+
+// =====================================================
+//                  SERVER START
+// =====================================================
+
+
+const PORT =
+process.env.PORT || 5001;
+
+
+
+app.listen(
+
+PORT,
+
+()=>{
+
+
+console.log(
+
+`Server running on port ${PORT} 🚀`
+
+);
+
+
+}
+
+);
